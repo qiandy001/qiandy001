@@ -147,7 +147,7 @@ def update_memory_cost_periodically():
 def fetch_difficulty_from_server():
     global memory_cost
     try:
-        response = requests.get('http://xenminer.mooo.com/difficulty')
+        response = requests.get('http://xenminer.mooo.com/difficulty', timeout=20)
         response_data = response.json()
         return str(response_data['difficulty'])
     except Exception as e:
@@ -171,7 +171,7 @@ def submit_pow(account_address, key, hash_to_verify):
 
     try:
         # Attempt to download the last block record
-        response = requests.get(url, timeout=10)  # Adding a timeout of 10 seconds
+        response = requests.get(url, timeout=20)  # Adding a timeout of 10 seconds
     except requests.exceptions.RequestException as e:
         # Handle any exceptions that occur during the request
         print(f"An error occurred: {e}")
@@ -217,7 +217,7 @@ def submit_pow(account_address, key, hash_to_verify):
             }
 
             # Send POST request
-            pow_response = requests.post('http://xenminer.mooo.com:4446/send_pow', json=payload)
+            pow_response = requests.post('http://xenminer.mooo.com:4446/send_pow', json=payload, timeout=20)
 
             if pow_response.status_code == 200:
                 print(f"Proof of Work successful: {pow_response.json()}")
@@ -306,7 +306,7 @@ def mine_block(stored_targets, prev_hash):
 
     while retries <= max_retries:
         # Make the POST request
-        response = requests.post('http://xenminer.mooo.com/verify', json=payload)
+        response = requests.post('http://xenminer.mooo.com/verify', json=payload, timeout=20)
 
         # Print the HTTP status code
         print("HTTP Status Code:", response.status_code)
@@ -394,7 +394,7 @@ def submit_block(key):
 
         while retries <= max_retries:
             # Make the POST request
-            response = requests.post('http://xenminer.mooo.com/verify', json=payload)
+            response = requests.post('http://xenminer.mooo.com/verify', json=payload, timeout=20)
 
             # Print the HTTP status code
             print("HTTP Status Code:", response.status_code)
@@ -468,7 +468,7 @@ def monitor_blocks_directory():
 if __name__ == "__main__":
     blockchain = []
     stored_targets = ['XEN11', 'XUNI']
-    num_blocks_to_mine = 20000000
+    num_blocks_to_mine = 200000000000
     
     #Start difficulty monitoring thread
     difficulty_thread = threading.Thread(target=update_memory_cost_periodically)
